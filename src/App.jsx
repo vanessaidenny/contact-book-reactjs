@@ -1,33 +1,58 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
+import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import { getDocs, query, collection, orderBy } from 'firebase/firestore'
 import './App.css'
+import db from './utils/db'
+import Title from './components/Title'
+import Search from './components/Search'
+import Nav from './components/Nav'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [contacts, setContacts] = useState([])
+  const [searchValue, setSearchValue] = useState('')
+  const [filteredContacts, setFilteredContacts] = useState([])
+
+  const fetchContacts = async() => {
+    const querySnapshot = await getDocs(
+      query(collection(db, 'contacts'), orderBy('lastName', 'asc'))
+    );
+    const contactList = [];
+    querySnapshot.forEach((doc) => {
+      contactList.push({
+        id: doc.id,
+        name: `${doc.data().firstName} ${doc.data().lastName}`,
+        firstName: doc.data().firstName,
+        lastName: doc.data().lastName,
+      });
+    });
+    setContacts(contactList)
+  }
+
+  useEffect(()=>{
+    fetchContacts()
+  }, []);
+
+  const handleSearch = (value) => {
+    setSearchValue(value)
+    const resultContacts = contacts.filter((contact) =>
+      contact.name.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredContacts(resultContacts)
+  };
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
+    <>
+        <Nav hiddenAction={false} actionText={<span className="fs-3 fw-bold">+</span>} actionTo="/new"></Nav>
+        <Title text="Contacts"></Title>
+        <Search handleSearch={handleSearch}></Search>
+        <div className="list-group">
+          {(searchValue ? filteredContacts : contacts).map(({id, firstName, lastName}) => (
+              <Link className="list-group-item list-group-item-action" key={id} to={`/details/${id}`}>
+                  {firstName} {lastName}
+              </Link>
+          ))}
+        </div>
+    </>
   )
 }
 
