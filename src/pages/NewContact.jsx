@@ -19,27 +19,23 @@ const NewContact = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const contactCollection = collection(db, collectionId);
-      const formData = {
-        firstName,
-        lastName,
-        email,
-        phoneNumber,
-        street,
-        city,
-        province,
-        zip,
-      };
-      const docRef = await addDoc(contactCollection, formData);
-      if (docRef.id) {
-        setSuccessMessage("Contact added successfully");
-        setTimeout(() => {
-          navigate("/");
-        }, 3000);
-      }
-    } catch (error) {
-      console.error("Error adding document: ", error);
+    const contactCollection = collection(db, collectionId);
+    const formData = {
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      street,
+      city,
+      province,
+      zip,
+    };
+    const docRef = await addDoc(contactCollection, formData);
+    if (docRef.id) {
+      setSuccessMessage("Contact added successfully");
+      setTimeout(() => {
+        navigate("/details/" + docRef.id);
+      }, 2000);
     }
   };
 
