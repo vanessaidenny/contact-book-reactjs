@@ -36,7 +36,7 @@ const Details = () => {
 
     return (
         <>
-            <Nav hiddenBack={false} backText="Contacts" hiddenAction={false} actionText="Edit" actionTo="/edit"></Nav>
+            <Nav hiddenBack={false} backText="Contacts" hiddenAction={false} actionText="Edit" actionTo={"/edit/" + id}></Nav>
             <Title text={`${firstName} ${lastName}`}></Title>
             <div className="border-top">
                 <ul className="list-group list-group-flush">

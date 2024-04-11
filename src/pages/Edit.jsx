@@ -2,12 +2,10 @@ import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Title from "../components/Title";
 import Nav from "../components/Nav";
-import { getDoc, doc, updateDoc } from "firebase/firestore";
-import db from "../utils/db";
+import { getDoc, doc, updateDoc, deleteDoc } from "firebase/firestore";
+import db, { collectionId } from '../utils/db'
 
 const Edit = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
   const [successMessage, setSuccessMessage] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -18,27 +16,29 @@ const Edit = () => {
   const [province, setProvince] = useState("");
   const [zip, setZip] = useState("");
 
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const fetchContactById = async () => {
+    const docSnap = await getDoc(doc(db, "contacts", id))
+    if (docSnap.exists()) {
+        setFirstName(docSnap.data().firstName)
+        setLastName(docSnap.data().lastName)
+        setEmail(docSnap.data().email)
+        setPhoneNumber(docSnap.data().phoneNumber)
+        setStreet(docSnap.data().street)
+        setCity(docSnap.data().city)
+        setProvince(docSnap.data().province)
+        setZip(docSnap.data().zip)
+    }
+  }
+
   useEffect(() => {
-    const fetchContactById = async () => {
-      const docSnap = await getDoc(doc(db, "contacts", id));
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setFirstName(data.firstName || "");
-        setLastName(data.lastName || "");
-        setEmail(data.email || "");
-        setPhoneNumber(data.phoneNumber || "");
-        setStreet(data.street || "");
-        setCity(data.city || "");
-        setProvince(data.province || "");
-        setZip(data.zip || "");
-      }
-    };
-    fetchContactById();
-  }, [id]);
+    fetchContactById()
+  }, [])
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    try {
       await updateDoc(doc(db, "contacts", id), {
         firstName,
         lastName,
@@ -49,20 +49,20 @@ const Edit = () => {
         province,
         zip
       });
-  
       setSuccessMessage("Contact updated successfully");
       setTimeout(() => {
-        navigate("/");
-      }, 3000);
-    } catch (error) {
-      console.error("Error updating document: ", error);
-    }
-  };
+        navigate("/details/" + id);
+      }, 2000);
+  }
   
   const handleDeleteContactById = async (selectedDocId) => {
     const docRef = doc(db, collectionId, selectedDocId)
     await deleteDoc(docRef)
-    fetchContacts()
+    fetchContactById()
+    setSuccessMessage("Contact deleted successfully");
+    setTimeout(() => {
+      navigate("/");
+    }, 2000);
   }
 
   return (
@@ -173,7 +173,7 @@ const Edit = () => {
           </Link>
         </div>
       </form>
-      <button type="button" class="btn btn-danger justify-content-center" onClick={()=> {handleDeleteContactById(id)}}>Delete Contact</button>
+      <button type="button" className="btn btn-danger justify-content-center" onClick={()=> {handleDeleteContactById(id)}}>Delete Contact</button>
     </>
   );
 };
