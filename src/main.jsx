@@ -17,8 +17,8 @@ const routes = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <div className="container-fluid">
-    <div className="row justify-content-center vh-100 p-5">
-      <div className="col-6 bg-white rounded p-5 pt-3">
+    <div className="row justify-content-center vh-100 p-lg-5 p-3">
+      <div className="col-lg-6 bg-white rounded p-lg-5 pt-3">
         <React.StrictMode>
               <RouterProvider router={routes}>
                 <App />

@@ -173,7 +173,7 @@ const Edit = () => {
           </Link>
         </div>
       </form>
-      <button type="button" className="btn btn-danger justify-content-center" onClick={()=> {handleDeleteContactById(id)}}>Delete Contact</button>
+      <button type="button" className="btn btn-danger justify-content-center mt-2" onClick={()=> {handleDeleteContactById(id)}}>Delete Contact</button>
     </>
   );
 };
