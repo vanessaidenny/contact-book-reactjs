@@ -19,8 +19,8 @@
 A contact book web application, which allows a user to see and search through all contacts, add new contacts, and edit and delete existing contacts.
 
 ## Frameworks Used
-Frontend: React, React Router
-Database: Firestore
+* Frontend: React, React Router
+* Database: Firestore
 
 ## CSS
 * Bootstrap
