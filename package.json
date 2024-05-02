@@ -1,8 +1,9 @@
 {
-  "name": "mtm6404-contact-book-react",
+  "name": "contact-book-reactjs",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://vanessaidenny.github.io/contact-book-reactjs/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
